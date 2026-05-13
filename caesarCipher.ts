@@ -1,8 +1,9 @@
 const phrase: string | undefined = process.argv[2];
 const shift: number = parseInt(process.argv[3]);
+const mode: string = process.argv[4]?.toLowerCase() ?? 'encrypt';
 
-if (!phrase || isNaN(shift)) {
-  console.log('Usage: ts-node caesarCipher.ts "your phrase" <shift>');
+if (!phrase || isNaN(shift) || !['encrypt', 'decrypt'].includes(mode)) {
+  console.log('Usage: ts-node caesarCipher.ts "your phrase" <shift> [encrypt|decrypt]');
   process.exit(1);
 }
 
@@ -15,7 +16,8 @@ function encryptChar(char: string, shift: number): string {
   return String.fromCharCode(shifted + base);
 }
 
-const encrypted = phrase.split('').map(char => encryptChar(char, shift)).join('');
-console.log(encrypted);
+const appliedShift = mode === 'decrypt' ? -shift : shift;
+const result = phrase.split('').map(char => encryptChar(char, appliedShift)).join('');
+console.log(result);
 
 export {};
