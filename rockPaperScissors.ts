@@ -13,6 +13,13 @@ const counters: Record<Move, Move> = {
   scissors: 'rock',
 };
 
+const aliases: Record<string, Move> = { r: 'rock', p: 'paper', s: 'scissors' };
+
+function normalizeMove(value: string): Move | null {
+  if (isMove(value)) return value;
+  return aliases[value] ?? null;
+}
+
 function isMove(value: string): value is Move {
   return (choices as string[]).includes(value);
 }
@@ -72,18 +79,17 @@ async function main() {
   console.log(chalk.dim('Type "quit" to exit.\n'));
 
   while (true) {
-    const input = await ask('Your move (rock/paper/scissors): ');
+    const input = await ask('Your move (rock/paper/scissors or r/p/s): ');
 
-    if (input.toLowerCase() === 'quit') break;
+    if (input.trim().toLowerCase() === 'quit') break;
 
-    const normalized = input.toLowerCase();
+    const normalized = input.trim().toLowerCase();
+    const player = normalizeMove(normalized);
 
-    if (!isMove(normalized)) {
-      console.log(chalk.red(`Invalid move: "${input}".`) + ` Choose one of: ${choices.join(', ')}\n`);
+    if (!player) {
+      console.log(chalk.red(`Invalid move: "${input}".`) + ` Choose one of: ${choices.join(', ')} (or r/p/s)\n`);
       continue;
     }
-
-    const player = normalized;
     const computer = computerMove(matrix, lastPlayerMove);
 
     // update matrix: after playing lastPlayerMove, player played `player`
