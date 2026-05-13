@@ -1,0 +1,15 @@
+{
+  "name": "cmd-game",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "tsc",
+    "caesar": "ts-node caesarCipher.ts",
+    "piglatin": "ts-node pigLatin.ts",
+    "rps": "ts-node rockPaperScissors.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.0"
+  }
+}
