@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "scripts": {
     "build": "tsc",
-    "caesar": "ts-node caesarCipher.ts",
-    "piglatin": "ts-node pigLatin.ts",
-    "rps": "ts-node rockPaperScissors.ts"
+    "caesar": "node node_modules/ts-node/dist/bin.js caesarCipher.ts",
+    "piglatin": "node node_modules/ts-node/dist/bin.js pigLatin.ts",
+    "rps": "node node_modules/ts-node/dist/bin.js rockPaperScissors.ts"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
