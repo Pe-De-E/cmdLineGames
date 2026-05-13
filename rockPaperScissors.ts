@@ -1,4 +1,5 @@
 import * as readline from 'readline';
+import chalk from 'chalk';
 
 type Move = 'rock' | 'paper' | 'scissors';
 
@@ -53,6 +54,12 @@ function getResult(player: Move, computer: Move): 'win' | 'lose' | 'draw' {
   return 'lose';
 }
 
+function colorResult(result: 'win' | 'lose' | 'draw'): string {
+  if (result === 'win')  return chalk.green('You win!');
+  if (result === 'lose') return chalk.red('You lose!');
+  return chalk.yellow('Draw!');
+}
+
 async function main() {
   const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
   const ask = (q: string) => new Promise<string>(resolve => rl.question(q, resolve));
@@ -61,8 +68,8 @@ async function main() {
   let lastPlayerMove: Move | null = null;
   let wins = 0, losses = 0, draws = 0;
 
-  console.log('Rock Paper Scissors — the computer learns your patterns.');
-  console.log('Type "quit" to exit.\n');
+  console.log(chalk.bold('Rock Paper Scissors') + chalk.dim(' — the computer learns your patterns.'));
+  console.log(chalk.dim('Type "quit" to exit.\n'));
 
   while (true) {
     const input = await ask('Your move (rock/paper/scissors): ');
@@ -72,7 +79,7 @@ async function main() {
     const normalized = input.toLowerCase();
 
     if (!isMove(normalized)) {
-      console.log(`Invalid move: "${input}". Choose one of: ${choices.join(', ')}\n`);
+      console.log(chalk.red(`Invalid move: "${input}".`) + ` Choose one of: ${choices.join(', ')}\n`);
       continue;
     }
 
@@ -89,22 +96,21 @@ async function main() {
     if (result === 'lose') losses++;
     if (result === 'draw') draws++;
 
-    const resultText = result === 'win' ? 'You win!' : result === 'lose' ? 'You lose!' : "Draw!";
-    console.log(`You: ${player} | Computer: ${computer} | ${resultText}`);
-    console.log(`Score — W:${wins} L:${losses} D:${draws}\n`);
+    console.log(`You: ${chalk.cyan(player)} | Computer: ${chalk.magenta(computer)} | ${colorResult(result)}`);
+    console.log(chalk.dim(`Score — W:${wins} L:${losses} D:${draws}\n`));
 
     lastPlayerMove = player;
   }
 
   const total = wins + losses + draws;
   if (total > 0) {
-    console.log(`\nFinal: ${wins}W / ${losses}L / ${draws}D`);
-    console.log(`Win rate: ${((wins / total) * 100).toFixed(1)}%`);
-    console.log('\nTransition matrix (what you played after each move):');
+    console.log(chalk.bold(`\nFinal: ${wins}W / ${losses}L / ${draws}D`));
+    console.log(`Win rate: ${chalk.yellow(((wins / total) * 100).toFixed(1) + '%')}`);
+    console.log(chalk.dim('\nTransition matrix (what you played after each move):'));
     for (const from of choices) {
       const row = matrix[from];
       const entries = choices.map(to => `${to}:${row[to]}`).join('  ');
-      console.log(`  after ${from.padEnd(8)} → ${entries}`);
+      console.log(chalk.dim(`  after ${from.padEnd(8)} → ${entries}`));
     }
   }
 
